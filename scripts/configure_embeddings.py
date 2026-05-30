@@ -238,7 +238,18 @@ async def _apply_pgvector_alter(engine: AsyncEngine, plan: _PgvectorPlan) -> Non
             )
 
         # Step 5: recreate HNSW indices from the saved definitions.
+        # HNSW has a hard pgvector limit of 2000 dimensions — skip for high-dim models.
+        HNSW_MAX_DIMS = 2000
         for index_name, ddl in index_defs:
+            if plan.target_dim > HNSW_MAX_DIMS:
+                print(
+                    f"  SKIP {index_name}: HNSW does not support >{HNSW_MAX_DIMS} dims "                    f"(target={plan.target_dim}). Use IVFFlat for high-dimensional embeddings."
+                )
+                logger.warning(
+                    "skipping HNSW index %s: target dim %d exceeds HNSW max %d",
+                    index_name, plan.target_dim, HNSW_MAX_DIMS,
+                )
+                continue
             logger.info("recreating HNSW index %s", index_name)
             await conn.execute(text(ddl))
 
