@@ -1,0 +1,61 @@
+name: Sync upstream plastic-labs/honcho
+
+on:
+  schedule:
+    - cron: '0 3 * * *'   # 03:00 UTC nightly
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/plastic-labs/honcho.git || true
+
+      - name: Fetch upstream
+        run: git fetch upstream main
+
+      - name: Rebase local patches onto upstream/main
+        id: rebase
+        run: |
+          git rebase upstream/main || echo "REBASE_FAILED=true" >> "$GITHUB_ENV"
+
+      - name: Push if rebase succeeded
+        if: env.REBASE_FAILED != 'true'
+        run: git push origin main --force-with-lease
+
+      - name: Open conflict issue if rebase failed
+        if: env.REBASE_FAILED == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              title: `Upstream sync conflict — ${new Date().toISOString().slice(0,10)}`,
+              labels: ['upstream-conflict'],
+              body: [
+                '## Upstream sync failed',
+                '',
+                'Nightly rebase of `plastic-labs/honcho` onto `mliradelc/honcho` produced conflicts.',
+                '',
+                '**Resolve manually:**',
+                '```bash',
+                'git fetch upstream main',
+                'git rebase upstream/main',
+                '# fix conflicts, then:',
+                'git rebase --continue',
+                'git push origin main --force-with-lease',
+                '```',
+              ].join('\n'),
+            });

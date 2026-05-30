@@ -22,6 +22,7 @@ from src.exceptions import ValidationException
 from .backend import ProviderBackend
 from .backends.anthropic import AnthropicBackend
 from .backends.gemini import GeminiBackend
+from .backends.mistral import MistralBackend
 from .backends.openai import OpenAIBackend
 from .credentials import default_transport_api_key
 from .history_adapters import (
@@ -144,6 +145,9 @@ def client_for_model_config(
         return get_anthropic_override_client(base_url, api_key)
     if provider == "openai":
         return get_openai_override_client(base_url, api_key)
+    if provider == "mistral":
+        # Mistral uses the same OpenAI-compat wire protocol
+        return get_openai_override_client(base_url, api_key)
     if provider == "gemini":
         return get_gemini_override_client(base_url, api_key)
     assert_never(provider)
@@ -158,6 +162,8 @@ def backend_for_provider(
         return AnthropicBackend(client)
     if provider == "openai":
         return OpenAIBackend(client)
+    if provider == "mistral":
+        return MistralBackend(client)
     if provider == "gemini":
         return GeminiBackend(client)
     assert_never(provider)
@@ -169,6 +175,7 @@ def history_adapter_for_provider(provider: ModelTransport) -> HistoryAdapter:
         return AnthropicHistoryAdapter()
     if provider == "gemini":
         return GeminiHistoryAdapter()
+    # openai and mistral both use the OpenAI message format
     return OpenAIHistoryAdapter()
 
 
