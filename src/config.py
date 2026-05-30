@@ -696,6 +696,11 @@ class EmbeddingSettings(HonchoSettings):
     VECTOR_DIMENSIONS: Annotated[int, Field(default=1536, gt=0)] = 1536
     MAX_INPUT_TOKENS: Annotated[int, Field(default=8192, gt=0)] = 8192
     MAX_TOKENS_PER_REQUEST: Annotated[int, Field(default=300_000, gt=0)] = 300_000
+    # Convenience alias so operators can use the flat env var
+    # ``EMBEDDING_DIMENSIONS_MODE=never`` instead of the nested
+    # ``EMBEDDING_MODEL_CONFIG__DIMENSIONS_MODE=never``.  When set, this
+    # takes precedence over ``MODEL_CONFIG.dimensions_mode``.
+    DIMENSIONS_MODE: EmbeddingDimensionsMode | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -716,7 +721,12 @@ class EmbeddingSettings(HonchoSettings):
         ``VECTOR_DIMENSIONS`` — a standalone resolver over
         ``ConfiguredEmbeddingModelSettings`` cannot see that.
         """
-        mode = self.MODEL_CONFIG.dimensions_mode
+        # Top-level DIMENSIONS_MODE takes precedence when explicitly set.
+        mode = (
+            self.DIMENSIONS_MODE
+            if self.DIMENSIONS_MODE is not None
+            else self.MODEL_CONFIG.dimensions_mode
+        )
         if mode == "always":
             return True
         if mode == "never":

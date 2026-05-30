@@ -80,6 +80,13 @@ def _sanitize_messages(
         )
         out.append({"role": "assistant", "content": ""})
 
+    # Rule 4: Mistral rejects ``content: null`` on assistant messages — normalise
+    # to empty string. This commonly occurs when the LLM responds with tool calls
+    # only (no accompanying text).
+    for msg in out:
+        if msg.get("role") == "assistant" and msg.get("content") is None:
+            msg["content"] = ""
+
     return out
 
 

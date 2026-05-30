@@ -271,6 +271,7 @@ def _build_embedding_settings(
         "EMBEDDING_MODEL_CONFIG__MODEL",
         "EMBEDDING_MODEL_CONFIG__TRANSPORT",
         "EMBEDDING_MODEL_CONFIG__DIMENSIONS_MODE",
+        "EMBEDDING_DIMENSIONS_MODE",
     ):
         monkeypatch.delenv(key, raising=False)
     for key, value in env.items():
@@ -339,3 +340,28 @@ def test_resolve_send_dimensions_never_returns_false_regardless(
         monkeypatch,
     )
     assert s.resolve_send_dimensions() is False
+
+
+def test_resolve_send_dimensions_top_level_never_overrides_auto(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """EMBEDDING_DIMENSIONS_MODE=never (top-level convenience) should suppress dimensions."""
+    s = _build_embedding_settings(
+        {
+            "EMBEDDING_DIMENSIONS_MODE": "never",
+            "EMBEDDING_VECTOR_DIMENSIONS": "4096",
+        },
+        monkeypatch,
+    )
+    assert s.resolve_send_dimensions() is False
+
+
+def test_resolve_send_dimensions_top_level_always(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """EMBEDDING_DIMENSIONS_MODE=always (top-level) should force dimensions."""
+    s = _build_embedding_settings(
+        {"EMBEDDING_DIMENSIONS_MODE": "always"},
+        monkeypatch,
+    )
+    assert s.resolve_send_dimensions() is True
