@@ -5,6 +5,9 @@ on:
     - cron: '0 3 * * *'   # 03:00 UTC nightly
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -47,7 +50,7 @@ jobs:
               body: [
                 '## Upstream sync failed',
                 '',
-                'Nightly rebase of `plastic-labs/honcho` onto `mliradelc/honcho` produced conflicts.',
+                'Nightly rebase of `plastic-labs/honcho` onto `mliradelc/honcho-max` produced conflicts.',
                 '',
                 '**Resolve manually:**',
                 '```bash',
