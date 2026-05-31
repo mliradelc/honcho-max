@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.0.38] - 2026-05-31
+### Fixed
+- (honcho-ha-addon) Remove duplicate `location /v3/` nginx block causing startup crash
+- (honcho-ha-addon) Remove duplicate `config.js` write and `index.html` patch blocks
+
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
