@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.32] - 2026-05-31
+
+### Fixed
+- `MistralBackend._sanitize_messages` Rule 5: strip trailing empty assistant stub.
+  Rule 3 appended `{role: assistant, content: ""}` after a trailing tool message;
+  Mistral rejects this with `add_generation_prompt` error. The stub is not needed —
+  removed as final sanitisation step.
+
 ## [3.0.31] - 2026-05-31
 
 ### Fixed
