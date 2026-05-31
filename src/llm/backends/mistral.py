@@ -87,6 +87,17 @@ def _sanitize_messages(
         if msg.get("role") == "assistant" and msg.get("content") is None:
             msg["content"] = ""
 
+    # Rule 5: Remove trailing empty assistant stub.
+    # When rule 3 appends an assistant stub after a trailing tool message,
+    # Mistral's server rejects it with:
+    #   "Cannot set add_generation_prompt=True when the last message is from the assistant"
+    # The stub is unnecessary — Mistral will generate the assistant turn itself.
+    if out and out[-1].get("role") == "assistant" and not out[-1].get("content"):
+        logger.debug(
+            "mistral_sanitize: removing trailing empty assistant stub"
+        )
+        out.pop()
+
     return out
 
 
