@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.33] - 2026-05-31
+
+### Fixed
+- **OpenConcho web UI**: `run.sh` now injects `/config.js`, adds `/v3/` nginx proxy,
+  and patches `index.html` to load the config — fixes blank/broken Web UI on HA ingress.
+
 ## [3.0.32] - 2026-05-31
 
 ### Fixed
