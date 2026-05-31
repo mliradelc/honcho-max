@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.31] - 2026-05-31
+
+### Fixed
+- **Dialectic missing credentials** (`AuthenticationError` — connecting to OpenAI instead of
+  configured endpoint): `apply_llm_config()` in `run.sh` set `TRANSPORT` and `MODEL` per
+  dialectic level but omitted `OVERRIDES__BASE_URL` and `OVERRIDES__API_KEY`. Without these,
+  pydantic-settings fell through to the OpenAI default. All five levels now receive the full
+  credential override block matching deriver/summary/dream.
+
 ## [3.0.7] - 2026-05-21
 
 ### Added
