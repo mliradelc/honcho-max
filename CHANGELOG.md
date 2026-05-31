@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.0.39] — 2026-05-31 (honcho-ha-addon)
+### Fixed
+- Runtime nginx dedup guard added to `run.sh` — resolves crash-loop on `3.0.38` where
+  Docker layer cache caused duplicate `location /v3/` blocks in generated nginx.conf.
 ## [3.0.38] - 2026-05-31
 ### Fixed
 - (honcho-ha-addon) Remove duplicate `location /v3/` nginx block causing startup crash
