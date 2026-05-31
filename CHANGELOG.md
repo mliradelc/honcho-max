@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.0.34] - 2026-05-31
+
+### Fixed
+- Dockerfile: pin OpenConcho builder stage to `--platform=linux/amd64` — pnpm OOM under QEMU aarch64 emulation (exit 132).
+
 ## [3.0.33] - 2026-05-31
 
 ### Fixed
