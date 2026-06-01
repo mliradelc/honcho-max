@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.0.41] - 2026-06-01
+### Notes
+- HA add-on v3.0.41: nginx auth_block initialisation fix (no changes to honcho-max source)
+
+
 ## [3.0.39] — 2026-05-31 (honcho-ha-addon)
 ### Fixed
 - Runtime nginx dedup guard added to `run.sh` — resolves crash-loop on `3.0.38` where
