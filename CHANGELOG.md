@@ -1,3 +1,8 @@
+## [3.0.43] - 2026-06-06
+
+### Fixed
+- Migration failure
+
 # Changelog
 
 ## [3.0.41] - 2026-06-01
