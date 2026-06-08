@@ -1,3 +1,8 @@
+## [3.0.45] (2026-06-09)
+### Fixed
+- Deriver health checks and sync reliability improvements
+
+
 ## [3.0.43] - 2026-06-06
 
 ### Fixed
