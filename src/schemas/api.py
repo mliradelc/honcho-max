@@ -445,6 +445,10 @@ class Conclusion(BaseModel):
         description="The peer the conclusion is about",
         serialization_alias="observed_id",
     )
+    level: str | None = Field(
+        default=None,
+        description="Observation level: explicit, deductive, inductive, or contradiction",
+    )
     session_name: str | None = Field(default=None, serialization_alias="session_id")
     created_at: datetime.datetime
 
